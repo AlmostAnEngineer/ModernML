@@ -1,13 +1,5 @@
 cmake_minimum_required(VERSION 3.26)
-project(LinearRegression)
+project(ModernML)
+set(CMAKE_CXX_STANDARD 20)
 
-set(LIB_SOURCES
-        LinearRegression.cpp
-        LinearRegression.hpp
-)
-
-add_library(LinearRegressionLib ${LIB_SOURCES})
-
-add_executable(LinearRegression main.cpp)
-
-target_link_libraries(LinearRegression PRIVATE LinearRegressionLib)
+add_executable(ModernML main.cpp LinearRegression.hpp)
