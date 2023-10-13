@@ -21,9 +21,9 @@ namespace
 {
     struct adamSettings
     {
-        [[maybe_unused]] float beta1=0.9;
-        [[maybe_unused]] float beta2=0.999;
-        [[maybe_unused]] float t=0;
+        [[maybe_unused]] float beta1 = 0.9;
+        [[maybe_unused]] float beta2 = 0.999;
+        [[maybe_unused]] float t = 0;
     };
 }
 
@@ -34,50 +34,66 @@ class LinearRegression {
 
 public:
     enum optimList{GRADIENTDESCENT, SGD, ADAM};
-    explicit LinearRegression(float learningRate=0.01, unsigned int iterations=1000, double epsilon=1E-8):
-    learningRate(learningRate), iterations(iterations), epsilon(epsilon), optimizator(optimList::GRADIENTDESCENT),\
-    adamParams(adamSettings{0.999,0.9,0})
+    explicit LinearRegression(float learningRate = 0.01, unsigned int iterations = 1000, double epsilon = 1E-8) :
+            learningRate(learningRate), iterations(iterations), epsilon(epsilon), optimizator(optimList::GRADIENTDESCENT), \
+    adamParams(adamSettings{0.999, 0.9, 0})
     {};
 
-    ~LinearRegression()=default;
+    ~LinearRegression() = default;
 
-    [[maybe_unused]] void fit(ublas::matrix<datatype> X, ublas::matrix<datatype> y)
+    void fit(ublas::matrix<datatype> X, ublas::matrix<datatype> y)
     {
-        if(X.size1() != y.size1())
+        if (X.size1() != y.size1())
             throw std::runtime_error("ERROR");
 
         const auto num_samples = X.size1();
         const auto num_features = X.size2();
+        const auto num_outputs = y.size2(); // Number of output columns in y
 
         coefficients_.resize(1, num_features, false);
         weights.resize(num_features, 0.0);
         bias = 0.0;
 
-        if(optimizator== optimList::GRADIENTDESCENT)
+        ublas::matrix<datatype> biases(num_outputs, 1, 0.0);
+        ublas::matrix<datatype> all_weights(num_outputs, num_features, 0.0);
+
+        if (optimizator == optimList::GRADIENTDESCENT)
         {
-            datatype loss = 0.0;
-            datatype error;
-            datatype prediction;
-            for (unsigned int iteration = 0; iteration < iterations; ++iteration) {
-                ublas::vector<datatype> gradient(num_features, 0.0);
-                for (size_t sample = 0; sample < num_samples; ++sample) {
-                    ublas::matrix_row<ublas::matrix<datatype>> x_sample(X, sample);
-                    prediction = ublas::inner_prod(x_sample, weights) + bias;
-                    error = prediction - y(sample, 0);
-                    loss += error * error;
-                    gradient += 2 * error * x_sample;
-                }
-                loss /= num_samples;
-                gradient /= num_samples;
+            for (auto columnIndex = 0; columnIndex < num_outputs; ++columnIndex)
+            {
+                datatype loss = 0.0;
+                datatype error;
+                datatype prediction;
+                for (auto iteration = 0; iteration < iterations; ++iteration)
+                {
+                    ublas::vector<datatype> gradient(num_features, 0.0);
+                    for (size_t sample = 0; sample < num_samples; ++sample)
+                    {
+                        ublas::matrix_row<ublas::matrix<datatype>> x_sample(X, sample);
+                        prediction = ublas::inner_prod(x_sample, weights) + bias;
+                        error = prediction - y(sample, columnIndex);
+                        loss += error * error;
+                        gradient += 2 * error * x_sample;
+                    }
+                    loss /= num_samples;
+                    gradient /= num_samples;
 
-                weights -= learningRate * gradient;
-                bias -= learningRate * loss;
+                    weights -= learningRate * gradient;
+                    bias -= learningRate * loss;
 
-                if (loss < epsilon) {
-                    break;
+                    if (loss < epsilon)
+                    {
+                        break;
+                    }
                 }
+                biases(columnIndex, 0) = bias;
+                ublas::matrix_row<ublas::matrix<datatype>> weights_row(all_weights, columnIndex);
+                weights_row = weights;
+
+                biasesAfterFit = biases;
+                std::cout << error << '\n';
             }
-            std::cout << error;
+            weightsAfterFit = all_weights;
         }
     }
 
@@ -112,10 +128,13 @@ private:
     ublas::matrix<datatype> y_;
     ublas::matrix<datatype> coefficients_;
 
-    datatype bias=0.0;
+    datatype bias = 0.0;
     ublas::vector<datatype> weights;
 
-    [[maybe_unused]] adamSettings adamParams;
+    ublas::matrix<datatype> biasesAfterFit;
+    ublas::matrix<datatype> weightsAfterFit;
+
+    adamSettings adamParams;
 };
 
-#endif //MODERNML_LINEARREGRESSION_H
+#endif // MODERNML_LINEARREGRESSION_H
