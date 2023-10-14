@@ -13,6 +13,7 @@
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector.hpp>
 #include <iostream>
+//TODO Regression Diverge Fix->smart learning_rate
 
 template <typename datatype>
 concept FloatingPoint = std::is_floating_point_v<datatype>;
@@ -35,7 +36,7 @@ class LinearRegression {
 public:
     enum optimList{GRADIENTDESCENT, SGD, ADAM};
     explicit LinearRegression(float learningRate = 0.01, unsigned int iterations = 1000, double epsilon = 1E-8) :
-            learningRate(learningRate), iterations(iterations), epsilon(epsilon), optimizator(optimList::GRADIENTDESCENT), \
+            learningRate(learningRate), maxIterations(iterations), epsilon(epsilon), optimizator(optimList::GRADIENTDESCENT), \
     adamParams(adamSettings{0.999, 0.9, 0})
     {};
 
@@ -48,11 +49,15 @@ public:
 
         const auto num_samples = X.size1();
         const auto num_features = X.size2();
-        const auto num_outputs = y.size2(); // Number of output columns in y
+        const auto num_outputs = y.size2();
 
-        coefficients_.resize(1, num_features, false);
+        ublas::matrix<datatype> coefficients;
+        coefficients.resize(1, num_features, false);
+
+        ublas::vector<datatype> weights;
         weights.resize(num_features, 0.0);
-        bias = 0.0;
+
+        datatype bias = 0.0;
 
         ublas::matrix<datatype> biases(num_outputs, 1, 0.0);
         ublas::matrix<datatype> all_weights(num_outputs, num_features, 0.0);
@@ -64,7 +69,7 @@ public:
                 datatype loss = 0.0;
                 datatype error;
                 datatype prediction;
-                for (auto iteration = 0; iteration < iterations; ++iteration)
+                for (auto iteration = 0; iteration < maxIterations; ++iteration)
                 {
                     ublas::vector<datatype> gradient(num_features, 0.0);
                     for (size_t sample = 0; sample < num_samples; ++sample)
@@ -82,8 +87,11 @@ public:
                     bias -= learningRate * loss;
 
                     if (loss < epsilon)
-                    {
                         break;
+
+                    if (std::isnan(loss) || std::isinf(loss))
+                    {
+                        throw std::runtime_error("Regression has diverged");
                     }
                 }
                 biases(columnIndex, 0) = bias;
@@ -121,15 +129,9 @@ public:
 private:
     optimList optimizator;
     float learningRate;
-    unsigned int iterations;
+    unsigned int maxIterations;
     double epsilon;
 
-    ublas::matrix<datatype> X_;
-    ublas::matrix<datatype> y_;
-    ublas::matrix<datatype> coefficients_;
-
-    datatype bias = 0.0;
-    ublas::vector<datatype> weights;
 
     ublas::matrix<datatype> biasesAfterFit;
     ublas::matrix<datatype> weightsAfterFit;
