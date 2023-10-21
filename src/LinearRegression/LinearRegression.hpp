@@ -1,6 +1,3 @@
-//
-// Created by jacekp on 07.10.23.
-//
 #pragma once
 #ifndef MODERNML_LINEARREGRESSION_H
 #define MODERNML_LINEARREGRESSION_H
