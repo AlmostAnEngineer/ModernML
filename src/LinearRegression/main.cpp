@@ -1,6 +1,3 @@
-//
-// Created by jacekp on 09.10.23.
-//
 #include "LinearRegression.hpp"
 #include <chrono>
 
