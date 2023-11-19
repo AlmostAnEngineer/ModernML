@@ -5,32 +5,20 @@
 #ifndef MODERNML_LINEARREGRESSION_H
 #define MODERNML_LINEARREGRESSION_H
 
-#include <concepts>
-#include <string>
-#include <stdexcept>
-#include <sstream>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector.hpp>
-#include <iostream>
-#include <random>
+#include "utils/Concepts.hpp"
+#include "utils/RandomGenerator.hpp"
+#include "utils/Outputs.hpp"
 
-
-template<typename datatype>
-concept FloatingPoint = std::is_floating_point_v<datatype>;
 
 namespace ublas = boost::numeric::ublas;
 
 template<FloatingPoint datatype>
 class LinearRegression
 {
-
 public:
-    enum LinearRegressionOutputs
-    {
-        SUCCESS_FIT, ERROR_BAD_SIZE, ERROR_DIVERGED
-    };
-
     explicit LinearRegression(float learningRate = 0.01, unsigned int iterations = 1000, double epsilon = 1E-8) :
             readyToPredict(false),
             learningRate(learningRate),
@@ -41,16 +29,6 @@ public:
     {};
 
     ~LinearRegression() = default;
-
-    datatype getRandomNumber(datatype min, datatype max)
-    {
-        std::random_device rd;
-        std::mt19937 gen(rd());
-
-        std::uniform_real_distribution<datatype> dist(min, max);
-
-        return dist(gen);
-    }
 
     [[maybe_unused]] LinearRegressionOutputs fit(ublas::matrix<datatype> X, ublas::matrix<datatype> y)
     {
@@ -67,7 +45,7 @@ public:
         coefficients.resize(1, num_features, true);
 
         ublas::matrix<datatype> biases(num_outputs, 1, 1);
-        ublas::matrix<datatype> all_weights(num_outputs, num_features, getRandomNumber(-1, 1));
+        ublas::matrix<datatype> all_weights(num_outputs, num_features, getRandomNumber<datatype>(-1, 1));
 
         for (auto columnIndex = 0; columnIndex < num_outputs; ++columnIndex)
         {
@@ -75,7 +53,7 @@ public:
             datatype error;
 
             ublas::vector<datatype> weights = ublas::row(all_weights, columnIndex);
-            datatype bias = getRandomNumber(-1, 1);
+            datatype bias = getRandomNumber<datatype>(-1, 1);
 
             for (auto iteration = 0; iteration < maxIterations; ++iteration)
             {

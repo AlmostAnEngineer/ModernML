@@ -2,12 +2,13 @@
 // Created by jacekp on 09.10.23.
 //
 #include "LinearRegression.hpp"
+#include "utils/PrettyPrinter.hpp"
 #include <chrono>
 
 int main()
 {
-    ublas::matrix<double> X(100, 2);
-    ublas::matrix<double> y(100, 1);
+    ublas::matrix<double> X(50, 2);
+    ublas::matrix<double> y(50, 1);
 
     for (size_t i = 0; i < X.size1(); ++i)
     {
@@ -35,6 +36,8 @@ int main()
     {
         std::cout << "Error while training or bad shape";
     }
+
+    printMatrix(X);
 
     return 0;
 }
