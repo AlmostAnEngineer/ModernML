@@ -14,6 +14,7 @@ int main()
         X(i, 1) = dbl * 2.0;
         y(i, 0) = dbl + 5;
     }
+    printMatrix(y);
 
     auto start_time = std::chrono::high_resolution_clock::now();
     LinearRegression<double> model(1e-5, 1000, 1e-8);
@@ -24,6 +25,7 @@ int main()
     std::cout << "Execution time: " << duration.count() << " millis" << std::endl;
 
     auto prediction = model.predict(X);
+    printMatrix(prediction);
     if (prediction.size2() != 0)
     {
         auto scores = model.getR2Scores(y, prediction);
@@ -33,8 +35,6 @@ int main()
     {
         std::cout << "Error while training or bad shape";
     }
-
-    printMatrix(X);
 
     return 0;
 }
