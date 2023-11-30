@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
 add_library(${PROJECT_NAME} SHARED
         LinearRegression.hpp
-        Ridge.hpp)
+        RidgeRegression.hpp)
 
 link_directories(../utils)
 link_libraries(${PROJECT_NAME} MODERNML_UTILS)
