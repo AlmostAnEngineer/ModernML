@@ -8,5 +8,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 add_executable(${PROJECT_NAME}
         main.cpp)
 
-link_directories(utils LinearModels)
-link_libraries(${PROJECT_NAME} MODERNML_LINEARMODELS MODERNML_UTILS)
+link_directories(utils LinearModels metrics)
+link_libraries(${PROJECT_NAME}  MODERNML_LINEARMODELS
+                                MODERNML_UTILS
+                                MODERNML_METRICS)

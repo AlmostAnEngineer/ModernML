@@ -11,11 +11,12 @@
 #include "../utils/Concepts.hpp"
 #include "../utils/RandomGenerator.hpp"
 #include "../utils/Outputs.hpp"
+#include "LinearModel.hpp"
 
 namespace ublas = boost::numeric::ublas;
 
 template<FloatingPoint datatype>
-class RidgeRegression
+class RidgeRegression : public LinearModel<datatype>
 {
 public:
     explicit RidgeRegression(float learningRate = 0.01, const float alpha = 0.1, unsigned int iterations = 1000,

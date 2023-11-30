@@ -3,6 +3,7 @@
 //
 
 #include "LinearModels/LinearRegression.hpp"
+#include "metrics/R2Score.hpp"
 #include <iostream>
 #include <boost/numeric/ublas/matrix.hpp>
 
@@ -15,5 +16,6 @@ int main()
     auto model = LinearRegression<double>();
     auto out = model.fit(X,y);
     auto pred = model.predict(X);
-    std::cout << model.getR2Scores(y, pred)(0,0);
+
+    std::cout << R2Score(y, pred)(0);
 }

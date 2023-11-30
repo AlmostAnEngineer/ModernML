@@ -8,12 +8,13 @@
 #include "../utils/Concepts.hpp"
 #include "../utils/RandomGenerator.hpp"
 #include "../utils/Outputs.hpp"
+#include "LinearModel.hpp"
 
 
 namespace ublas = boost::numeric::ublas;
 
 template<FloatingPoint datatype>
-class LinearRegression
+class LinearRegression : public LinearModel<datatype>
 {
 public:
     explicit LinearRegression(float learningRate = 0.01, unsigned int iterations = 1000, double epsilon = 1E-8) :
@@ -88,7 +89,6 @@ public:
         return LinearRegressionOutputs::SUCCESS_FIT;
     }
 
-
     ublas::matrix<datatype> predict(ublas::matrix<datatype> X)
     {
         if (X.size2() != num_features || !readyToPredict)
@@ -111,47 +111,6 @@ public:
         }
         return predictions;
     }
-
-    ublas::matrix<datatype> getR2Scores(const ublas::matrix<datatype> &yReal, const ublas::matrix<datatype> &yPred)
-    {
-        if (yReal.size1() != yPred.size1() || yReal.size2() != yPred.size2() || yReal.size2() == 0)
-        {
-            return ublas::matrix<datatype>(1, 1, std::numeric_limits<datatype>::quiet_NaN());
-        }
-
-        const size_t numColumns = yReal.size2();
-        ublas::matrix<datatype> r2Scores(1, numColumns, 0.0);
-
-        for (size_t col = 0; col < numColumns; ++col)
-        {
-            datatype yMean = 0.0;
-            for (size_t i = 0; i < yReal.size1(); ++i)
-            {
-                yMean += yReal(i, col);
-            }
-            yMean /= yReal.size1();
-
-            datatype ssr = 0.0;
-            datatype sse = 0.0;
-
-            for (size_t i = 0; i < yReal.size1(); ++i)
-            {
-                ssr += (yPred(i, col) - yMean) * (yPred(i, col) - yMean);
-                sse += (yReal(i, col) - yPred(i, col)) * (yReal(i, col) - yPred(i, col));
-            }
-
-            if (ssr == 0.0)
-            {
-                r2Scores(0, col) = 1.0;
-            } else
-            {
-                r2Scores(0, col) = 1.0 - sse / ssr;
-            }
-        }
-
-        return r2Scores;
-    }
-
 
 private:
     float learningRate;
