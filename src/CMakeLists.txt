@@ -6,9 +6,11 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
 add_executable(${PROJECT_NAME}
-        main.cpp)
+        main.cpp
+        preprocessing/Scaler.hpp)
 
-link_directories(utils LinearModels metrics)
-link_libraries(${PROJECT_NAME}  MODERNML_LINEARMODELS
-                                MODERNML_UTILS
-                                MODERNML_METRICS)
+link_directories(utils LinearModels metrics preprocessing)
+link_libraries(${PROJECT_NAME} MODERNML_LINEARMODELS
+        MODERNML_UTILS
+        MODERNML_METRICS
+        MODERNML_PREPROCESSING)

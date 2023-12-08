@@ -10,11 +10,15 @@
 #include <boost/numeric/ublas/matrix.hpp>
 namespace ublas = boost::numeric::ublas;
 
-template<FloatingPoint datatype>
-class LinearModel
+namespace ModernML
 {
-    virtual LinearRegressionOutputs fit(ublas::matrix<datatype> X, ublas::matrix<datatype> y);
-    virtual ublas::matrix<datatype> predict(ublas::matrix<datatype> X);
-};
+template<FloatingPoint datatype>
+    class LinearModel
+    {
+        virtual LinearRegressionOutputs fit(ublas::matrix<datatype> X, ublas::matrix<datatype> y);
+
+        virtual ublas::matrix<datatype> predict(ublas::matrix<datatype> X);
+    };
+}
 
 #endif //MODERNML_LINEARMODEL_HPP

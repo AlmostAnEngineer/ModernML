@@ -5,9 +5,17 @@
 #ifndef MODERNML_OUTPUTS_HPP
 #define MODERNML_OUTPUTS_HPP
 
-enum LinearRegressionOutputs
+namespace ModernML
 {
-    SUCCESS_FIT, ERROR_BAD_SIZE, ERROR_DIVERGED
-};
+    enum LinearRegressionOutputs
+    {
+        SUCCESS_FIT, ERROR_BAD_SIZE, ERROR_DIVERGED
+    };
+
+    enum ScalerOutputs
+    {
+        SUCCESS, ERROR
+    };
+}
 
 #endif //MODERNML_OUTPUTS_HPP

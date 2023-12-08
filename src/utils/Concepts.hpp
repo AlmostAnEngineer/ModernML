@@ -6,11 +6,12 @@
 #define MODERNML_CONCEPTS_HPP
 
 #include <concepts>
+namespace ModernML
+{
+    template<typename datatype>
+    concept FloatingPoint = std::is_floating_point_v<datatype>;
 
-template<typename datatype>
-concept FloatingPoint = std::is_floating_point_v<datatype>;
-
-template<typename datatype>
-concept Integral = std::integral<datatype>;
-
+    template<typename datatype>
+    concept Integral = std::integral<datatype>;
+}
 #endif //MODERNML_CONCEPTS_HPP
