@@ -1,3 +1,0 @@
-/home/jacekp/Pulpit/GitHubProjects/ModernML/src/cmake-build-debug/CMakeFiles/MODERNML.dir
-/home/jacekp/Pulpit/GitHubProjects/ModernML/src/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/jacekp/Pulpit/GitHubProjects/ModernML/src/cmake-build-debug/CMakeFiles/rebuild_cache.dir
